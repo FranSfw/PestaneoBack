@@ -8,7 +8,7 @@ const Empleado = require('../models/empleadosModels');
 const getEmpleados = async (req, res) => {
   try {
     const empleados = await Empleado.getAllEmpleados();
-    res.status(200).json(empleados);
+    res.status(200).json({empleados:empleados});
   } catch (error) {
     res.status(500).json({ message: 'Error al obtener los empleados', error: error.message });
   }
@@ -26,7 +26,7 @@ const LoginEmpleado = async (req, res) => {
         return res.status(404).json({ message: `Empleado no encontrado` });
       }
 
-      res.status(200).json(empleado);
+      res.status(200).json({empleado:empleado});
     } catch (error) {
       res.status(500).json({ message: 'Error al obtener el empleado', error: error.message });
     }

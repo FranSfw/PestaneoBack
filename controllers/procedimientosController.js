@@ -18,7 +18,7 @@ const getProcedimiento = async (req, res) => {
     if (!procedimiento) {
       return res.status(404).json({ message: `Procedimiento con ID ${id} no encontrado` });
     }
-    res.status(200).json(procedimiento);
+    res.status(200).json({procedimiento:procedimiento});
   } catch (error) {
     res.status(500).json({ message: 'Error al obtener el procedimiento', error: error.message });
   }
@@ -29,7 +29,7 @@ const createProcedimiento = async (req, res) => {
   const { nombre, descripcion } = req.body;
   try {
     const newProcedimiento = await Procedimiento.createProcedimiento({ nombre, descripcion });
-    res.status(201).json(newProcedimiento);
+    res.status(201).json({newProcedimiento:newProcedimiento});
   } catch (error) {
     res.status(500).json({ message: 'Error al crear el procedimiento', error: error.message });
   }
@@ -45,7 +45,7 @@ const updateProcedimiento = async (req, res) => {
       return res.status(404).json({ message: `Procedimiento con ID ${id} no encontrado` });
     }
     const updatedProcedimiento = await Procedimiento.updateProcedimiento(id, { nombre, descripcion });
-    res.status(200).json(updatedProcedimiento);
+    res.status(200).json({updatedProcedimiento:updatedProcedimiento});
   } catch (error) {
     res.status(500).json({ message: 'Error al actualizar el procedimiento', error: error.message });
   }

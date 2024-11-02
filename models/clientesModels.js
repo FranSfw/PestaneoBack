@@ -2,20 +2,20 @@ const pool = require('../configs/db');
 
 // Obtener todos los clientes
 const getAllClientes = async () => {
-  console.log('modelo');
   const result = await pool.query('SELECT * FROM clientes ORDER BY id ASC');
-  return result.rows;
+  return result;
 };
 
 // Obtener un cliente por ID
 const getClienteById = async (id) => {
   const result = await pool.query('SELECT * FROM clientes WHERE id = $1', [id]);
-  return result.rows[0];
+  return result[0];
 };
 
 const getClienteByTel = async (tel) => {
-  const result = await pool.query('SELECT * FROM clientes WHERE telefono = $1', [tel]);
-  return result.rows[0];
+  tel = '%' + tel + '%';
+  const result = await pool.query('SELECT * FROM clientes WHERE telefono LIKE $1', [tel]);
+  return result[0];
 };
 
 // Crear un nuevo cliente
@@ -28,7 +28,7 @@ const createCliente = async (cliente) => {
     [nombre, apellido, domicilio, telefono, email, fecha_nacimiento, medicamentos, alergias, sensibilidad_productos, dermatitis, infeccion_ojos, dolencia_ojos, latex, fecha_ultimo_procedimiento, ultimo_procedimiento]
   );
 
-  return result.rows[0];
+  return result[0];
 };
 
 // Actualizar un cliente existente
@@ -42,7 +42,7 @@ const updateCliente = async (id, cliente) => {
     [nombre, apellido, domicilio, telefono, email, fecha_nacimiento, medicamentos, alergias, sensibilidad_productos, dermatitis, infeccion_ojos, dolencia_ojos, latex, fecha_ultimo_procedimiento, ultimo_procedimiento, id]
   );
 
-  return result.rows[0];
+  return result[0];
 };
 
 const updateClienteByTel = async (tel, cliente) => {
@@ -55,23 +55,22 @@ const updateClienteByTel = async (tel, cliente) => {
     [nombre, apellido, domicilio, telefono, email, fecha_nacimiento, medicamentos, alergias, sensibilidad_productos, dermatitis, infeccion_ojos, dolencia_ojos, latex, fecha_ultimo_procedimiento, ultimo_procedimiento, tel]
   );
 
-  return result.rows[0];
+  return result[0];
 };
 
 // Eliminar un cliente
 const deleteClienteById = async (id) => {
   const result = await pool.query('DELETE FROM clientes WHERE id = $1 RETURNING *', [id]);
-  return result.rows[0];
+  return result[0];
 };
 
 const deleteClienteByTel = async (tel) => {
   const result = await pool.query('DELETE FROM clientes WHERE telefono = $1 RETURNING *', [tel]);
-  return result.rows[0];
+  return result[0];
 };
 
 
 module.exports = {
-  test,
   getAllClientes,
   getClienteById,
   getClienteByTel,

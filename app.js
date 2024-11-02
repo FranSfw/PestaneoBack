@@ -5,17 +5,16 @@ const citaRoutes = require('./routers/citasRouters');
 const empleadoRoutes = require('./routers/empleadosRouters');
 const clientesRoutes = require('./routers/clientesRouters');
 const procedimientosRoutes = require('./routers/procedimientosRouters');
- 
+
 const corsOptions = {
-    origin: '*', // Cambia esto a la IP correcta de tu cliente
-    allowedHeaders: 'Content-Type',
+  origin: '*', // Cambia esto a la IP correcta de tu cliente
+  allowedHeaders: 'Content-Type',
 };
 
 // Middleware para parsear JSON
 app.use(express.json());
-app.use(cors());
+app.use(cors(corsOptions));
 
-//app.use(cors(corsOptions));
 
 // Rutas
 app.use('/citas', citaRoutes);

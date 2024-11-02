@@ -5,8 +5,7 @@ const getClientes = async (req, res) => {
   try {
     console.log('get clientes');
     const clientes = await Cliente.getAllClientes();
-    console.log(`clientes ${clientes}`);
-    res.status(200).json(clientes);
+    res.status(200).json({clientes:clientes});
   } catch (error) {
     res.status(500).json({ message: 'Error al obtener los clientes', error: error.message });
   }
@@ -17,6 +16,18 @@ const getCliente = async (req, res) => {
   const id = parseInt(req.params.id);
   try {
     const cliente = await Cliente.getClienteById(id);
+    if (!cliente) {
+      return res.status(404).json({ message: `Cliente con ID ${id} no encontrado` });
+    }
+    res.status(200).json(cliente);
+  } catch (error) {
+    res.status(500).json({ message: 'Error al obtener el cliente', error: error.message });
+  }
+};
+const getClienteTel = async (req, res) => {
+  const tel = req.body.telefono;
+  try {
+    const cliente = await Cliente.getClienteByTel(id);
     if (!cliente) {
       return res.status(404).json({ message: `Cliente con ID ${id} no encontrado` });
     }
@@ -73,6 +84,7 @@ module.exports = {
   getCliente,
   createCliente,
   updateCliente,
+  getClienteTel,
   // updateClienteByTel,
   deleteCliente,
   // deleteClienteByTel

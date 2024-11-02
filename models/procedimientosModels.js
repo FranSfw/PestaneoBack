@@ -3,13 +3,13 @@ const pool = require('../configs/db');
 // Obtener todos los procedimientos
 const getAllProcedimientos = async () => {
   const result = await pool.query('SELECT * FROM procedimientos ORDER BY id ASC');
-  return result.rows;
+  return result;
 };
 
 // Obtener un procedimiento por ID
 const getProcedimientoById = async (id) => {
   const result = await pool.query('SELECT * FROM procedimientos WHERE id = $1', [id]);
-  return result.rows[0];
+  return result;
 };
 
 // Crear un nuevo procedimiento
@@ -22,7 +22,7 @@ const createProcedimiento = async (procedimiento) => {
     [tipo_procedimiento]
   );
 
-  return result.rows[0];
+  return result[0];
 };
 
 // Actualizar un procedimiento existente
@@ -36,13 +36,13 @@ const updateProcedimiento = async (id, procedimiento) => {
     [tipo_procedimiento, id]
   );
 
-  return result.rows[0];
+  return result;
 };
 
 // Eliminar un procedimiento
 const deleteProcedimiento = async (id) => {
   const result = await pool.query('DELETE FROM procedimientos WHERE id = $1 RETURNING *', [id]);
-  return result.rows[0];
+  return result;
 };
 
 module.exports = {

@@ -4,7 +4,7 @@ const Cita = require('../models/citasModels');
 const getCitas = async (req, res) => {
   try {
     const citas = await Cita.getAllCitas();
-    res.status(200).json({citas:citas});
+    res.status(200).json({ citas: citas });
   } catch (error) {
     res.status(500).json({ message: 'Error al obtener las citas', error: error.message });
   }
@@ -14,7 +14,7 @@ const getCitas = async (req, res) => {
 const getCita = async (req, res) => {
   const id = parseInt(req.params.id);
   try {
-    const cita = await Cita.getCitaById(id);
+    const cita = await Cita.getCitasById(id);
     if (!cita) {
       return res.status(404).json({ message: `Cita con ID ${id} no encontrada` });
     }
@@ -28,7 +28,7 @@ const getCita = async (req, res) => {
 const createCita = async (req, res) => {
   const { fecha, hora, cliente_id, procedimiento_id, empleado_id } = req.body;
   try {
-    const newCita = await Cita.createCita({ fecha, hora, cliente_id, procedimiento_id, empleado_id });
+    const newCita = await Cita.createCitas({ fecha, hora, cliente_id, procedimiento_id, empleado_id });
     res.status(201).json(newCita);
   } catch (error) {
     res.status(500).json({ message: 'Error al crear la cita', error: error.message });
