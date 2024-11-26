@@ -1,35 +1,33 @@
 // import bcrypt from 'bcrypt';
 const bcrypt = require('bcrypt');
-
-
 const Empleado = require('../models/empleadosModels');
 
 // Obtener todos los empleados
 const getEmpleados = async (req, res) => {
   try {
     const empleados = await Empleado.getAllEmpleados();
-    res.status(200).json({empleados:empleados});
+    res.status(200).json({ empleados: empleados });
   } catch (error) {
     res.status(500).json({ message: 'Error al obtener los empleados', error: error.message });
   }
 };
 
 const LoginEmpleado = async (req, res) => {
-    const { email, password } = req.body;
-    const hashed_pwd = bcrypt.hash(password, 10);
-    if (!email || !password) {
-      return res.status(400).json({ message: 'Todos los campos son obligatorios.' });
+  const { email, password } = req.body;
+  const hashed_pwd = bcrypt.hash(password, 10);
+  if (!email || !password) {
+    return res.status(400).json({ message: 'Todos los campos son obligatorios.' });
+  }
+  try {
+    const empleado = await Empleado.loginEmployees(email, hashed_pwd);
+    if (!empleado) {
+      return res.status(404).json({ message: `Empleado no encontrado` });
     }
-    try {
-      const empleado = await Empleado.loginEmployees(email, hashed_pwd);
-      if (!empleado) {
-        return res.status(404).json({ message: `Empleado no encontrado` });
-      }
 
-      res.status(200).json({empleado:empleado});
-    } catch (error) {
-      res.status(500).json({ message: 'Error al obtener el empleado', error: error.message });
-    }
+    res.status(200).json({ empleado: empleado });
+  } catch (error) {
+    res.status(500).json({ message: 'Error al obtener el empleado', error: error.message });
+  }
 
 }
 

@@ -23,6 +23,30 @@ const getCita = async (req, res) => {
     res.status(500).json({ message: 'Error al obtener la cita', error: error.message });
   }
 };
+const getLastCita = async (req, res) => {
+  const cliente = req.body;
+  try {
+    const cita = await Cita.getCitasHistory(cliente);
+    if (!cita) {
+      return res.status(404).json({ message: `Citas para cliente ${cliente.id} no encontradas` });
+    }
+    res.status(200).json({ cita: cita });
+  } catch (error) {
+    res.status(500).json({ message: 'Error al obtener la cita', error: error.message });
+  }
+};
+const getCitaByPhone = async (req, res) => {
+  const info = req.body;
+  try {
+    const cita = await Cita.getCitasByTel(info);
+    if (!cita) {
+      return res.status(404).json({ message: `Cita con telefono ${info.telefono} no encontrada` });
+    }
+    res.status(200).json(cita);
+  } catch (error) {
+    res.status(500).json({ message: 'Error al obtener la cita', error: error.message });
+  }
+};
 
 // Crear una nueva cita
 const createCita = async (req, res) => {
@@ -71,4 +95,6 @@ module.exports = {
   createCita,
   updateCita,
   deleteCita,
+  getCitaByPhone,
+  getLastCita
 };

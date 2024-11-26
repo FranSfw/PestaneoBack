@@ -10,6 +10,7 @@ router.get('/:id', citasController.getCita);
 
 // Crear una nueva cita
 router.post('/', citasController.createCita);
+router.post('/last', citasController.getLastCita);
 
 // Actualizar una cita existente
 router.put('/:id', citasController.updateCita);
