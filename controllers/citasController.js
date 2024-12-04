@@ -11,6 +11,19 @@ const getCitas = async (req, res) => {
       .json({ message: "Error al obtener las citas", error: error.message });
   }
 };
+const getOldCitas = async (req, res) => {
+  try {
+    const citas = await Cita.getAllOldCitas();
+    res.status(200).json({ citas: citas });
+  } catch (error) {
+    res
+      .status(500)
+      .json({
+        message: "Error al obtener las previas citas",
+        error: error.message,
+      });
+  }
+};
 
 // Obtener una cita por ID
 const getCita = async (req, res) => {
@@ -126,4 +139,5 @@ module.exports = {
   deleteCita,
   getCitaByPhone,
   getLastCita,
+  getOldCitas,
 };
