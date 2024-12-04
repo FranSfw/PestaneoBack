@@ -3,7 +3,6 @@ const Cliente = require("../models/clientesModels");
 // Obtener todos los clientes
 const getClientes = async (req, res) => {
   try {
-    console.log("get clientes");
     const clientes = await Cliente.getAllClientes();
     res.status(200).json({ clientes: clientes });
   } catch (error) {
@@ -23,7 +22,7 @@ const getCliente = async (req, res) => {
         .status(404)
         .json({ message: `Cliente con ID ${id} no encontrado` });
     }
-    res.status(200).json(cliente);
+    res.status(200).json({ cliente: cliente });
   } catch (error) {
     res
       .status(500)
@@ -33,7 +32,7 @@ const getCliente = async (req, res) => {
 const getClienteTel = async (req, res) => {
   const tel = req.body.telefono;
   try {
-    const cliente = await Cliente.getClienteByTel(id);
+    const cliente = await Cliente.getClienteByTel(tel);
     if (!cliente) {
       return res
         .status(404)
@@ -52,7 +51,7 @@ const createCliente = async (req, res) => {
   const cliente = req.body;
   try {
     const newCliente = await Cliente.createCliente(cliente);
-    res.status(201).json(newCliente);
+    res.status(201).json({ cliente: newCliente });
   } catch (error) {
     res
       .status(500)
@@ -63,47 +62,15 @@ const createCliente = async (req, res) => {
 // Actualizar un cliente existente
 const updateCliente = async (req, res) => {
   const id = parseInt(req.params.id);
-  const {
-    nombre,
-    apellido,
-    domicilio,
-    telefono,
-    email,
-    fecha_nacimiento,
-    medicamentos,
-    alergias,
-    sensibilidad_productos,
-    dermatitis,
-    infeccion_ojos,
-    dolencia_ojos,
-    latex,
-    fecha_ultimo_procedimiento,
-    ultimo_procedimiento,
-  } = req.body;
+  const cliente = req.body;
+  cliente.id = id;
   try {
-    const existingCliente = await Cliente.getClienteById(id);
-    if (!existingCliente) {
+    const updatedCliente = await Cliente.updateCliente(cliente);
+    if (!updatedCliente) {
       return res
         .status(404)
         .json({ message: `Cliente con ID ${id} no encontrado` });
     }
-    const updatedCliente = await Cliente.updateCliente(id, {
-      nombre,
-      apellido,
-      domicilio,
-      telefono,
-      email,
-      fecha_nacimiento,
-      medicamentos,
-      alergias,
-      sensibilidad_productos,
-      dermatitis,
-      infeccion_ojos,
-      dolencia_ojos,
-      latex,
-      fecha_ultimo_procedimiento,
-      ultimo_procedimiento,
-    });
     res.status(200).json(updatedCliente);
   } catch (error) {
     res.status(500).json({
@@ -117,7 +84,7 @@ const updateCliente = async (req, res) => {
 const deleteCliente = async (req, res) => {
   const id = parseInt(req.params.id);
   try {
-    const deletedCliente = await Cliente.deleteCliente(id);
+    const deletedCliente = await Cliente.deleteClienteById(id);
     if (!deletedCliente) {
       return res
         .status(404)

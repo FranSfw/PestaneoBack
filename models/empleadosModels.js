@@ -10,7 +10,7 @@ const getAllEmpleados = async () => {
 
 const loginEmployees = async (email, password) => {
   const result = await pool.query(
-    "SELECT * FROM empleado WHERE email=? AND password=?",
+    "SELECT id, nombre, apellido, email FROM empleado WHERE email=? AND password=?",
     [email, password]
   );
   return result.length > 0 ? { success: true } : { success: false };
@@ -30,10 +30,10 @@ const createEmpleado = async (empleado) => {
   try {
     const result = await pool.query(
       `INSERT INTO empleados (nombre, apellido, email, password)
-       VALUES (?, ?, ?, ?) RETURNING *`,
+       VALUES (?, ?, ?, ?)`,
       [nombre, apellido, email, hashed_pwd]
     );
-    return result[0];
+    return result.insertId;
   } catch (error) {
     console.error("Error al crear empleado:", error);
     throw error;
@@ -41,26 +41,26 @@ const createEmpleado = async (empleado) => {
 };
 
 // Actualizar un empleado existente
-const updateEmpleado = async (id, empleado) => {
-  const { nombre, apellido } = empleado;
+const updateEmpleado = async (empleado) => {
+  const { id, nombre, apellido } = empleado;
 
   const result = await pool.query(
     `UPDATE empleados
      SET nombre = ?, apellido = ?
-     WHERE id = ? RETURNING *`,
+     WHERE id = ?`,
     [nombre, apellido, id]
   );
 
-  return result[0];
+  return result;
 };
 
 // Eliminar un empleado
 const deleteEmpleado = async (id) => {
-  const result = await pool.query(
-    "DELETE FROM empleados WHERE id = ? RETURNING *",
-    [id]
-  );
-  return result[0];
+  const result = await pool.query("DELETE FROM empleados WHERE id = ?", [id]);
+  if (result.affectedRows === 0) {
+    throw new Error(`Empleado con ID ${id} no encontrado`);
+  }
+  return "Empleado eliminado exitosamente";
 };
 
 module.exports = {

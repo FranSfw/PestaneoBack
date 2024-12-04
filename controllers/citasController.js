@@ -67,7 +67,7 @@ const createCita = async (req, res) => {
   const cita = req.body;
   try {
     const newCita = await Cita.createCitas(cita);
-    res.status(201).json({ cita: newCita });
+    res.status(201).json({ message: newCita });
   } catch (error) {
     if (
       error.message ===
@@ -88,7 +88,7 @@ const updateCita = async (req, res) => {
   cita.id = id;
   try {
     const updatedCita = await Cita.updateCitas(cita);
-    res.status(200).json({ message: "Cita actualizada exitosamente" });
+    res.status(200).json({ message: updatedCita });
   } catch (error) {
     if (
       error.message ===

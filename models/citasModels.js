@@ -86,7 +86,7 @@ const createCitas = async (citas) => {
     ]
   );
 
-  return result.insertId;
+  return "Cita creada exitosamente";
 };
 
 // Actualizar un usuario existente
@@ -132,14 +132,14 @@ const updateCitas = async (citas) => {
     ]
   );
 
-  return result.insertId;
+  return "Cita actualizada exitosamente";
 };
 
 // Eliminar un usuario
 const deleteCitas = async (id) => {
   const result = await pool.query("DELETE FROM citas WHERE id = ?", [id]);
   if (result.affectedRows === 0) {
-    throw new Error("Cita no encontrada o ya fue eliminado.");
+    throw new Error("Cita no encontrada o ya fue eliminada.");
   }
   return "Cita eliminada exitosamente";
 };

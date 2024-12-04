@@ -67,8 +67,9 @@ const createCliente = async (cliente) => {
 };
 
 // Actualizar un cliente existente
-const updateCliente = async (id, cliente) => {
+const updateCliente = async (cliente) => {
   const {
+    id,
     nombre,
     apellido,
     domicilio,
@@ -89,7 +90,7 @@ const updateCliente = async (id, cliente) => {
   const result = await pool.query(
     `UPDATE clientes
      SET nombre = ?, apellido = ?, domicilio = ?, telefono = ?, email = ?, fecha_nacimiento = ?, medicamentos = ?, alergias = ?, sensibilidad_productos = ?, dermatitis = ?, infeccion_ojos = ?, dolencia_ojos = ?, latex = ?, fecha_ultimo_procedimiento = ?, ultimo_procedimiento = ?
-     WHERE id = ? RETURNING *`,
+     WHERE id = ?`,
     [
       nombre,
       apellido,
@@ -135,7 +136,7 @@ const updateClienteByTel = async (tel, cliente) => {
   const result = await pool.query(
     `UPDATE clientes
      SET nombre = ?, apellido = ?, domicilio = ?, telefono = ?, email = ?, fecha_nacimiento = ?, medicamentos = ?, alergias = ?, sensibilidad_productos = ?, dermatitis = ?, infeccion_ojos = ?, dolencia_ojos = ?, latex = ?, fecha_ultimo_procedimiento = ?, ultimo_procedimiento = ?
-     WHERE telefono = ? RETURNING *`,
+     WHERE telefono = ?`,
     [
       nombre,
       apellido,
@@ -161,18 +162,14 @@ const updateClienteByTel = async (tel, cliente) => {
 
 // Eliminar un cliente
 const deleteClienteById = async (id) => {
-  const result = await pool.query(
-    "DELETE FROM clientes WHERE id = ? RETURNING *",
-    [id]
-  );
+  const result = await pool.query("DELETE FROM clientes WHERE id = ?", [id]);
   return result[0];
 };
 
 const deleteClienteByTel = async (tel) => {
-  const result = await pool.query(
-    "DELETE FROM clientes WHERE telefono = ? RETURNING *",
-    [tel]
-  );
+  const result = await pool.query("DELETE FROM clientes WHERE telefono = ?", [
+    tel,
+  ]);
   return result[0];
 };
 

@@ -1,12 +1,15 @@
-const Procedimiento = require('../models/procedimientosModels');
+const Procedimiento = require("../models/procedimientosModels");
 
 // Obtener todos los procedimientos
 const getProcedimientos = async (req, res) => {
   try {
     const procedimientos = await Procedimiento.getAllProcedimientos();
-    res.status(200).json({procedimientos:procedimientos});
+    res.status(200).json({ procedimientos: procedimientos });
   } catch (error) {
-    res.status(500).json({ message: 'Error al obtener los procedimientos', error: error.message });
+    res.status(500).json({
+      message: "Error al obtener los procedimientos",
+      error: error.message,
+    });
   }
 };
 
@@ -16,38 +19,61 @@ const getProcedimiento = async (req, res) => {
   try {
     const procedimiento = await Procedimiento.getProcedimientoById(id);
     if (!procedimiento) {
-      return res.status(404).json({ message: `Procedimiento con ID ${id} no encontrado` });
+      return res
+        .status(404)
+        .json({ message: `Procedimiento con ID ${id} no encontrado` });
     }
-    res.status(200).json({procedimiento:procedimiento});
+    res.status(200).json({ procedimiento: procedimiento });
   } catch (error) {
-    res.status(500).json({ message: 'Error al obtener el procedimiento', error: error.message });
+    res.status(500).json({
+      message: "Error al obtener el procedimiento",
+      error: error.message,
+    });
   }
 };
 
 // Crear un nuevo procedimiento
 const createProcedimiento = async (req, res) => {
-  const { nombre, descripcion } = req.body;
+  const procedimiento = req.body;
   try {
-    const newProcedimiento = await Procedimiento.createProcedimiento({ nombre, descripcion });
-    res.status(201).json({newProcedimiento:newProcedimiento});
+    const newProcedimiento = await Procedimiento.createProcedimiento(
+      procedimiento
+    );
+    res.status(201).json({ message: newProcedimiento });
   } catch (error) {
-    res.status(500).json({ message: 'Error al crear el procedimiento', error: error.message });
+    res.status(500).json({
+      message: "Error al crear el procedimiento",
+      error: error.message,
+    });
   }
 };
 
 // Actualizar un procedimiento existente
 const updateProcedimiento = async (req, res) => {
   const id = parseInt(req.params.id);
-  const { nombre, descripcion } = req.body;
+  const procedimiento = req.body;
+  procedimiento.id = id;
   try {
-    const existingProcedimiento = await Procedimiento.getProcedimientoById(id);
-    if (!existingProcedimiento) {
-      return res.status(404).json({ message: `Procedimiento con ID ${id} no encontrado` });
-    }
-    const updatedProcedimiento = await Procedimiento.updateProcedimiento(id, { nombre, descripcion });
-    res.status(200).json({updatedProcedimiento:updatedProcedimiento});
+    const updatedProcedimiento = await Procedimiento.updateProcedimiento(
+      procedimiento
+    );
+    res.status(200).json({ updatedProcedimiento: updatedProcedimiento });
   } catch (error) {
-    res.status(500).json({ message: 'Error al actualizar el procedimiento', error: error.message });
+    if (error.message.contains("Faltan")) {
+      res.status(400).json({
+        message: error.message,
+      });
+    }
+    if (
+      error.message ===
+      "No se encontró ningún procedimiento con el ID proporcionado."
+    ) {
+      res.status(404).json({ message: error.message });
+    }
+    res.status(500).json({
+      message: "Error al actualizar el procedimiento",
+      error: error.message,
+    });
   }
 };
 
@@ -56,12 +82,15 @@ const deleteProcedimiento = async (req, res) => {
   const id = parseInt(req.params.id);
   try {
     const deletedProcedimiento = await Procedimiento.deleteProcedimiento(id);
-    if (!deletedProcedimiento) {
-      return res.status(404).json({ message: `Procedimiento con ID ${id} no encontrado` });
-    }
-    res.status(200).json({ message: 'Procedimiento eliminado exitosamente' });
+    res.status(200).json({ message: deletedProcedimiento });
   } catch (error) {
-    res.status(500).json({ message: 'Error al eliminar el procedimiento', error: error.message });
+    if (error.message === "Procedimiento no encontrado o ya fue eliminado.") {
+      res.status(404).json({ message: error.message });
+    }
+    res.status(500).json({
+      message: "Error al eliminar el procedimiento",
+      error: error.message,
+    });
   }
 };
 
