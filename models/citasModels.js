@@ -61,16 +61,18 @@ const createCitas = async (citas) => {
     espessura,
   } = citas;
   const conflictCheck = await pool.query(
-    "SELECT * FROM appointments WHERE fecha = ? AND (encargado = ? OR cliente = ?)",
+    "SELECT * FROM citas WHERE fecha = ? AND (encargado = ? OR cliente = ?)",
     [fecha, encargado, cliente]
   );
   if (conflictCheck.rows.length > 0) {
-    return;
+    throw new Error(
+      "El empleado o usuario ya tiene una cita programada en ese horario"
+    );
   }
 
   const result = await pool.query(
     `INSERT INTO citas (cliente, fecha, encargado, procedimiento, notas, mapping_estilo, tamaño, curvatura, espessura)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING *`,
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       cliente,
       fecha,
@@ -84,12 +86,13 @@ const createCitas = async (citas) => {
     ]
   );
 
-  return result;
+  return result.insertId;
 };
 
 // Actualizar un usuario existente
-const updateCitas = async (id, citas) => {
+const updateCitas = async (citas) => {
   const {
+    id,
     cliente,
     fecha,
     encargado,
@@ -101,11 +104,20 @@ const updateCitas = async (id, citas) => {
     espessura,
   } = citas;
 
+  const conflictCheck = await pool.query(
+    "SELECT * FROM citas WHERE fecha = ? AND (encargado = ? OR cliente = ?)",
+    [fecha, encargado, cliente]
+  );
+  if (conflictCheck.rows.length > 0) {
+    throw new Error(
+      "El empleado o usuario ya tiene una cita programada en ese horario"
+    );
+  }
+
   const result = await pool.query(
     `UPDATE citas
        SET cliente = ?, fecha = ?, encargado = ?, procedimiento = ?, notas = ?, mapping_estilo = ?, tamaño = ?, curvatura = ?, espessura = ?
-       WHERE id = ?
-       RETURNING *`,
+       WHERE id = ?`,
     [
       cliente,
       fecha,
@@ -120,16 +132,16 @@ const updateCitas = async (id, citas) => {
     ]
   );
 
-  return result;
+  return result.insertId;
 };
 
 // Eliminar un usuario
 const deleteCitas = async (id) => {
-  const result = await pool.query(
-    "DELETE FROM citas WHERE id = ? RETURNING *",
-    [id]
-  );
-  return result;
+  const result = await pool.query("DELETE FROM citas WHERE id = ?", [id]);
+  if (result.affectedRows === 0) {
+    throw new Error("Cita no encontrada o ya fue eliminado.");
+  }
+  return "Cita eliminada exitosamente";
 };
 
 module.exports = {

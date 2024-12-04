@@ -2,13 +2,15 @@ const pool = require("../configs/db");
 
 // Obtener todos los empleados
 const getAllEmpleados = async () => {
-  const result = await pool.query("SELECT * FROM empleados ORDER BY id ASC");
+  const result = await pool.query(
+    "SELECT id, nombre, apellido,email FROM empleados ORDER BY id ASC"
+  );
   return result;
 };
 
 const loginEmployees = async (email, password) => {
   const result = await pool.query(
-    "SELECT * FROM employees WHERE access_email=? AND password=?",
+    "SELECT * FROM empleado WHERE email=? AND password=?",
     [email, password]
   );
   return result.length > 0 ? { success: true } : { success: false };

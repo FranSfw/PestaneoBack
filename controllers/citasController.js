@@ -1,4 +1,4 @@
-const Cita = require('../models/citasModels');
+const Cita = require("../models/citasModels");
 
 // Obtener todas las citas
 const getCitas = async (req, res) => {
@@ -6,7 +6,9 @@ const getCitas = async (req, res) => {
     const citas = await Cita.getAllCitas();
     res.status(200).json({ citas: citas });
   } catch (error) {
-    res.status(500).json({ message: 'Error al obtener las citas', error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error al obtener las citas", error: error.message });
   }
 };
 
@@ -16,11 +18,15 @@ const getCita = async (req, res) => {
   try {
     const cita = await Cita.getCitasById(id);
     if (!cita) {
-      return res.status(404).json({ message: `Cita con ID ${id} no encontrada` });
+      return res
+        .status(404)
+        .json({ message: `Cita con ID ${id} no encontrada` });
     }
-    res.status(200).json(cita);
+    res.status(200).json({ cita: cita });
   } catch (error) {
-    res.status(500).json({ message: 'Error al obtener la cita', error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error al obtener la cita", error: error.message });
   }
 };
 const getLastCita = async (req, res) => {
@@ -28,11 +34,15 @@ const getLastCita = async (req, res) => {
   try {
     const cita = await Cita.getCitasHistory(cliente);
     if (!cita) {
-      return res.status(404).json({ message: `Citas para cliente ${cliente.id} no encontradas` });
+      return res
+        .status(404)
+        .json({ message: `Citas para cliente ${cliente.id} no encontradas` });
     }
     res.status(200).json({ cita: cita });
   } catch (error) {
-    res.status(500).json({ message: 'Error al obtener la cita', error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error al obtener la cita", error: error.message });
   }
 };
 const getCitaByPhone = async (req, res) => {
@@ -40,38 +50,55 @@ const getCitaByPhone = async (req, res) => {
   try {
     const cita = await Cita.getCitasByTel(info);
     if (!cita) {
-      return res.status(404).json({ message: `Cita con telefono ${info.telefono} no encontrada` });
+      return res
+        .status(404)
+        .json({ message: `Cita con telefono ${info.telefono} no encontrada` });
     }
-    res.status(200).json(cita);
+    res.status(200).json({ cita: cita });
   } catch (error) {
-    res.status(500).json({ message: 'Error al obtener la cita', error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error al obtener la cita", error: error.message });
   }
 };
 
 // Crear una nueva cita
 const createCita = async (req, res) => {
-  const { fecha, hora, cliente_id, procedimiento_id, empleado_id } = req.body;
+  const cita = req.body;
   try {
-    const newCita = await Cita.createCitas({ fecha, hora, cliente_id, procedimiento_id, empleado_id });
-    res.status(201).json(newCita);
+    const newCita = await Cita.createCitas(cita);
+    res.status(201).json({ cita: newCita });
   } catch (error) {
-    res.status(500).json({ message: 'Error al crear la cita', error: error.message });
+    if (
+      error.message ===
+      "El empleado o usuario ya tiene una cita programada en ese horario"
+    ) {
+      res.status(400).json({ message: error.message });
+    }
+    res
+      .status(500)
+      .json({ message: "Error al crear la cita", error: error.message });
   }
 };
 
 // Actualizar una cita existente
 const updateCita = async (req, res) => {
   const id = parseInt(req.params.id);
-  const { fecha, hora, cliente_id, procedimiento_id, empleado_id } = req.body;
+  const cita = req.body;
+  cita.id = id;
   try {
-    const existingCita = await Cita.getCitaById(id);
-    if (!existingCita) {
-      return res.status(404).json({ message: `Cita con ID ${id} no encontrada` });
-    }
-    const updatedCita = await Cita.updateCita(id, { fecha, hora, cliente_id, procedimiento_id, empleado_id });
-    res.status(200).json(updatedCita);
+    const updatedCita = await Cita.updateCitas(cita);
+    res.status(200).json({ message: "Cita actualizada exitosamente" });
   } catch (error) {
-    res.status(500).json({ message: 'Error al actualizar la cita', error: error.message });
+    if (
+      error.message ===
+      "El empleado o usuario ya tiene una cita programada en ese horario"
+    ) {
+      res.status(400).json({ message: error.message });
+    }
+    res
+      .status(500)
+      .json({ message: "Error al actualizar la cita", error: error.message });
   }
 };
 
@@ -79,13 +106,15 @@ const updateCita = async (req, res) => {
 const deleteCita = async (req, res) => {
   const id = parseInt(req.params.id);
   try {
-    const deletedCita = await Cita.deleteCita(id);
-    if (!deletedCita) {
-      return res.status(404).json({ message: `Cita con ID ${id} no encontrada` });
-    }
-    res.status(200).json({ message: 'Cita eliminada exitosamente' });
+    const deletedCita = await Cita.deleteCitas(id);
+    res.status(200).json({ message: deletedCita });
   } catch (error) {
-    res.status(500).json({ message: 'Error al eliminar la cita', error: error.message });
+    if (error.message === "Cita no encontrada o ya fue eliminado.") {
+      res.status(404).json({ message: error.message });
+    }
+    res
+      .status(500)
+      .json({ message: "Error al eliminar la cita", error: error.message });
   }
 };
 
@@ -96,5 +125,5 @@ module.exports = {
   updateCita,
   deleteCita,
   getCitaByPhone,
-  getLastCita
+  getLastCita,
 };

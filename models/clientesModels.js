@@ -43,7 +43,7 @@ const createCliente = async (cliente) => {
 
   const result = await pool.query(
     `INSERT INTO clientes (nombre, apellido, domicilio, telefono, email, fecha_nacimiento, medicamentos, alergias, sensibilidad_productos, dermatitis, infeccion_ojos, dolencia_ojos, latex, fecha_ultimo_procedimiento, ultimo_procedimiento)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING *`,
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       nombre,
       apellido,
