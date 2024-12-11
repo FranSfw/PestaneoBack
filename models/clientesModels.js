@@ -1,5 +1,6 @@
 const pool = require("../configs/db");
 
+
 // Obtener todos los clientes
 const getAllClientes = async () => {
   const result = await pool.query("SELECT * FROM clientes ORDER BY id ASC");
@@ -34,6 +35,7 @@ const getUserByPhone = async (tel) => {
 
 // Crear un nuevo cliente
 const createCliente = async (cliente) => {
+  console.log(cliente);
   const {
     nombre,
     apellido,
@@ -50,11 +52,15 @@ const createCliente = async (cliente) => {
     latex,
     fecha_ultimo_procedimiento,
     ultimo_procedimiento,
+    firma,
+    foto,
+
   } = cliente;
 
+ 
   const result = await pool.query(
-    `INSERT INTO clientes (nombre, apellido, domicilio, telefono, email, fecha_nacimiento, medicamentos, alergias, sensibilidad_productos, dermatitis, infeccion_ojos, dolencia_ojos, latex, fecha_ultimo_procedimiento, ultimo_procedimiento)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    `INSERT INTO clientes (nombre, apellido, domicilio, telefono, email, fecha_nacimento, medicamentos, alergias, sensibilidad_productos, dermatitis, infeccion_ojos, dolencia_ojos, latex, fecha_ultimo_procedimiento, ultimo_procedimiento,firma,foto)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       nombre,
       apellido,
@@ -71,10 +77,14 @@ const createCliente = async (cliente) => {
       latex,
       fecha_ultimo_procedimiento,
       ultimo_procedimiento,
+      firma,
+      foto,
     ]
   );
-
-  return result[0];
+  console.log("res ",result);
+  console.log("res ",result.insertId);
+  return result.insertId;
+  ;
 };
 
 // Actualizar un cliente existente
