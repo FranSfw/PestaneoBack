@@ -60,8 +60,9 @@ const getCitasByTel = async (tel) => {
 };
 
 const createCitas = async (citas) => {
+  console.log("hola");
   const {
-    cliente,
+    telefono,
     fecha,
     encargado,
     procedimiento,
@@ -71,11 +72,27 @@ const createCitas = async (citas) => {
     curvatura,
     espessura,
   } = citas;
-  const conflictCheck = await pool.query(
+  console.log("telefono: "+telefono);
+
+  const [clienteResult] = await pool.query(
+    "SELECT id FROM clientes WHERE telefono = ?",
+    [telefono]
+  );
+
+  console.log(clienteResult.id);
+
+  if (clienteResult.length === 0) {
+    throw new Error("No se encontró un cliente con ese teléfono");
+  }
+
+  const cliente = clienteResult.id; // Accede al ID del cliente
+  console.log("Cliente ID: " + cliente);
+
+  const [conflictCheck] = await pool.query(
     "SELECT * FROM citas WHERE fecha = ? AND (encargado = ? OR cliente = ?)",
     [fecha, encargado, cliente]
   );
-  if (conflictCheck.rows.length > 0) {
+  if (conflictCheck > 0) {
     throw new Error(
       "El empleado o usuario ya tiene una cita programada en ese horario"
     );
@@ -96,6 +113,7 @@ const createCitas = async (citas) => {
       espessura,
     ]
   );
+  console.log(result);
 
   return "Cita creada exitosamente";
 };
@@ -114,6 +132,8 @@ const updateCitas = async (citas) => {
     curvatura,
     espessura,
   } = citas;
+
+  
 
   const conflictCheck = await pool.query(
     "SELECT * FROM citas WHERE fecha = ? AND (encargado = ? OR cliente = ?)",

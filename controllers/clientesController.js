@@ -32,7 +32,7 @@ const getCliente = async (req, res) => {
 const getClienteTel = async (req, res) => {
   const tel = req.body.telefono;
   try {
-    const cliente = await Cliente.getClienteByTel(tel);
+    const cliente = await Cliente.getUserByPhone(tel);
     if (!cliente) {
       return res
         .status(404)
@@ -104,7 +104,7 @@ module.exports = {
   createCliente,
   updateCliente,
   getClienteTel,
-  // updateClienteByTel,
+  //updateClienteByTel,
   deleteCliente,
   // deleteClienteByTel
 };

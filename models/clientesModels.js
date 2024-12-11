@@ -21,6 +21,17 @@ const getClienteByTel = async (tel) => {
   return result[0];
 };
 
+const getUserByPhone = async (tel) => {
+  const phone = tel + "%";
+  const result = await pool.query(
+    "SELECT id,nombre,apellido,domicilio,telefono,email FROM clientes WHERE telefono LIKE $1 OR name ILIKE $1",
+    [phone]
+  );
+  return result.rows;
+};
+
+
+
 // Crear un nuevo cliente
 const createCliente = async (cliente) => {
   const {
@@ -181,4 +192,5 @@ module.exports = {
   updateCliente,
   deleteClienteById,
   deleteClienteByTel,
+  getUserByPhone,
 };

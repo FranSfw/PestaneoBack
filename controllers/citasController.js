@@ -77,6 +77,7 @@ const getCitaByPhone = async (req, res) => {
 
 // Crear una nueva cita
 const createCita = async (req, res) => {
+  //console.log("wasaaa",req.body);
   const cita = req.body;
   try {
     const newCita = await Cita.createCitas(cita);
@@ -91,6 +92,8 @@ const createCita = async (req, res) => {
     res
       .status(500)
       .json({ message: "Error al crear la cita", error: error.message });
+      console.log(error);
+      console.log(error.message);
   }
 };
 

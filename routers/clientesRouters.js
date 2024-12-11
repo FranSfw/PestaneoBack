@@ -5,7 +5,7 @@ const ClienteController = require('../controllers/clientesController');
 
 // Rutas para CRUD de usuarios
 router.get('/', ClienteController.getClientes);
-// router.get('/:id', ClienteController.getClienteByTel);
+router.get('/:id', ClienteController.getClienteTel);
 // router.get('/:id', ClienteController.getClienteById);
 router.post('/', ClienteController.createCliente);
 router.put('/:id', ClienteController.updateCliente);
