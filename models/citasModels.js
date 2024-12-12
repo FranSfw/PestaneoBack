@@ -168,7 +168,9 @@ const updateCitas = async (citas) => {
 
 // Eliminar un usuario
 const deleteCitas = async (id) => {
-  const result = await pool.query("DELETE FROM citas WHERE id = ?", [id]);
+  console.log("id to delete: "+id); 
+  const [result] = await pool.query("DELETE FROM citas WHERE id = ?", [id]);
+
   if (result.affectedRows === 0) {
     throw new Error("Cita no encontrada o ya fue eliminada.");
   }

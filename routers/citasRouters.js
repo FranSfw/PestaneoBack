@@ -17,6 +17,6 @@ router.post("/last", citasController.getLastCita);
 router.put("/:id", citasController.updateCita);
 
 // Eliminar una cita
-router.delete("/:id", citasController.deleteCita);
+router.delete("/delete/:id", citasController.deleteCita);
 
 module.exports = router;

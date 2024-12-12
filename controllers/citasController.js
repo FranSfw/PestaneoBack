@@ -121,8 +121,10 @@ const updateCita = async (req, res) => {
 // Eliminar una cita
 const deleteCita = async (req, res) => {
   const id = parseInt(req.params.id);
+  console.log("id: ",id);
   try {
     const deletedCita = await Cita.deleteCitas(id);
+    
     res.status(200).json({ message: deletedCita });
   } catch (error) {
     if (error.message === "Cita no encontrada o ya fue eliminado.") {
