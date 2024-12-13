@@ -16,12 +16,10 @@ const getOldCitas = async (req, res) => {
     const citas = await Cita.getAllOldCitas();
     res.status(200).json({ citas: citas });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        message: "Error al obtener las previas citas",
-        error: error.message,
-      });
+    res.status(500).json({
+      message: "Error al obtener las previas citas",
+      error: error.message,
+    });
   }
 };
 
@@ -92,8 +90,8 @@ const createCita = async (req, res) => {
     res
       .status(500)
       .json({ message: "Error al crear la cita", error: error.message });
-      console.log(error);
-      console.log(error.message);
+    console.log(error);
+    console.log(error.message);
   }
 };
 
@@ -102,6 +100,7 @@ const updateCita = async (req, res) => {
   const id = parseInt(req.params.id);
   const cita = req.body;
   cita.id = id;
+  console.log("cita: ", cita);
   try {
     const updatedCita = await Cita.updateCitas(cita);
     res.status(200).json({ message: updatedCita });
@@ -110,9 +109,9 @@ const updateCita = async (req, res) => {
       error.message ===
       "El empleado o usuario ya tiene una cita programada en ese horario"
     ) {
-      res.status(400).json({ message: error.message });
+      return res.status(400).json({ message: error.message });
     }
-    res
+    return res
       .status(500)
       .json({ message: "Error al actualizar la cita", error: error.message });
   }
@@ -121,10 +120,10 @@ const updateCita = async (req, res) => {
 // Eliminar una cita
 const deleteCita = async (req, res) => {
   const id = parseInt(req.params.id);
-  console.log("id: ",id);
+  console.log("id: ", id);
   try {
     const deletedCita = await Cita.deleteCitas(id);
-    
+
     res.status(200).json({ message: deletedCita });
   } catch (error) {
     if (error.message === "Cita no encontrada o ya fue eliminado.") {

@@ -4,7 +4,7 @@ const pool = require("../configs/db");
 // Obtener todos los usuarios
 const getAllCitas = async () => {
   const result =
-    await pool.query(`SELECT c.id as cita_id,cl.id as cliente_id,cl.nombre as cliente_nombre, cl.apellido as cliente_apellido, cl.telefono, c.fecha, e.nombre as encargado_nombre, e.apellido as encargado_apellido, p.tipo_procedimiento, c.notas, c.mapping_estilo, c.tamaño, c.curvatura, c.espessura, cl.foto
+    await pool.query(`SELECT c.id as cita_id,cl.id as cliente_id,cl.nombre as cliente_nombre, cl.apellido as cliente_apellido, cl.telefono, c.fecha, e.nombre as encargado_nombre, e.apellido as encargado_apellido, p.tipo_procedimiento, c.notas, c.mapping_estilo, c.tamaño, c.curvatura, c.espessura, cl.foto, e.id as encargado_id, p.id as tipo_procedimiento_id
   FROM citas as c
   INNER JOIN clientes as cl on c.cliente = cl.id
   INNER JOIN procedimientos as p on c.procedimiento = p.id
@@ -72,7 +72,7 @@ const createCitas = async (citas) => {
     curvatura,
     espessura,
   } = citas;
-  console.log("telefono: "+telefono);
+  console.log("telefono: " + telefono);
 
   const [clienteResult] = await pool.query(
     "SELECT id FROM clientes WHERE telefono = ?",
@@ -118,57 +118,64 @@ const createCitas = async (citas) => {
   return "Cita creada exitosamente";
 };
 
-// Actualizar un usuario existente
 const updateCitas = async (citas) => {
-  const {
-    id,
-    cliente,
-    fecha,
-    encargado,
-    procedimiento,
-    notas,
-    mapping_estilo,
-    tamaño,
-    curvatura,
-    espessura,
-  } = citas;
-
-  
-
-  const conflictCheck = await pool.query(
-    "SELECT * FROM citas WHERE fecha = ? AND (encargado = ? OR cliente = ?)",
-    [fecha, encargado, cliente]
-  );
-  if (conflictCheck.rows.length > 0) {
-    throw new Error(
-      "El empleado o usuario ya tiene una cita programada en ese horario"
-    );
-  }
-
-  const result = await pool.query(
-    `UPDATE citas
-       SET cliente = ?, fecha = ?, encargado = ?, procedimiento = ?, notas = ?, mapping_estilo = ?, tamaño = ?, curvatura = ?, espessura = ?
-       WHERE id = ?`,
-    [
-      cliente,
+  try {
+    const {
+      id,
+      cliente_id,
       fecha,
-      encargado,
-      procedimiento,
+      encargado_id,
+      tipo_procedimiento_id,
       notas,
       mapping_estilo,
       tamaño,
       curvatura,
       espessura,
-      id,
-    ]
-  );
+    } = citas;
 
-  return "Cita actualizada exitosamente";
+    const conflictCheck = await pool.query(
+      "SELECT * FROM citas WHERE fecha = ? AND (encargado = ? OR cliente = ?)",
+      [fecha, encargado_id, cliente_id]
+    );
+
+    if (conflictCheck.length > 0) {
+      throw new Error(
+        "El empleado o usuario ya tiene una cita programada en ese horario"
+      );
+    }
+
+    const result = await pool.query(
+      `UPDATE citas
+         SET cliente = ?, fecha = ?, encargado = ?, procedimiento = ?, notas = ?, mapping_estilo = ?, tamaño = ?, curvatura = ?, espessura = ?
+         WHERE id = ?`,
+      [
+        cliente_id,
+        fecha,
+        encargado_id,
+        tipo_procedimiento_id,
+        notas,
+        mapping_estilo,
+        tamaño,
+        curvatura,
+        espessura,
+        id,
+      ]
+    );
+
+    if (result.affectedRows === 0) {
+      throw new Error("No se encontró la cita para actualizar.");
+    }
+
+    return "Cita actualizada exitosamente";
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 };
 
 // Eliminar un usuario
 const deleteCitas = async (id) => {
-  console.log("id to delete: "+id); 
+  console.log("id to delete: " + id);
   const [result] = await pool.query("DELETE FROM citas WHERE id = ?", [id]);
 
   if (result.affectedRows === 0) {
