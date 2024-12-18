@@ -83,6 +83,7 @@ const updateCliente = async (req, res) => {
 // Eliminar un cliente
 const deleteCliente = async (req, res) => {
   const id = parseInt(req.params.id);
+  console.log(id);
   try {
     const deletedCliente = await Cliente.deleteClienteById(id);
     if (!deletedCliente) {

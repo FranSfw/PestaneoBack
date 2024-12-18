@@ -110,7 +110,7 @@ const updateCliente = async (cliente) => {
 
   const result = await pool.query(
     `UPDATE clientes
-     SET nombre = ?, apellido = ?, domicilio = ?, telefono = ?, email = ?, fecha_nacimiento = ?, medicamentos = ?, alergias = ?, sensibilidad_productos = ?, dermatitis = ?, infeccion_ojos = ?, dolencia_ojos = ?, latex = ?, fecha_ultimo_procedimiento = ?, ultimo_procedimiento = ?
+     SET nombre = ?, apellido = ?, domicilio = ?, telefono = ?, email = ?, fecha_nacimento = ?, medicamentos = ?, alergias = ?, sensibilidad_productos = ?, dermatitis = ?, infeccion_ojos = ?, dolencia_ojos = ?, latex = ?, fecha_ultimo_procedimiento = ?, ultimo_procedimiento = ?
      WHERE id = ?`,
     [
       nombre,
@@ -183,6 +183,7 @@ const updateClienteByTel = async (tel, cliente) => {
 
 // Eliminar un cliente
 const deleteClienteById = async (id) => {
+  console.log(id);
   const result = await pool.query("DELETE FROM clientes WHERE id = ?", [id]);
   return result[0];
 };
