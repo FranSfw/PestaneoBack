@@ -29,7 +29,7 @@ const getAllOldCitas = async () => {
 const getCitasHistory = async (cliente) => {
   const id = cliente.clienteid;
   const result = await pool.query(
-    `SELECT c.id as cita_id,cl.id as cliente_id,cl.nombre as cliente_nombre, cl.apellido as cliente_apellido, cl.telefono, c.fecha, e.nombre as encargado_nombre, e.apellido as encargado_apellido, p.tipo_procedimiento, c.notas, c.mapping_estilo, c.tamaño, c.curvatura, c.espessura
+    `SELECT c.id as cita_id,cl.id as cliente_id,cl.nombre as cliente_nombre, cl.apellido as cliente_apellido, cl.telefono, cl.foto, c.fecha, e.nombre as encargado_nombre, e.apellido as encargado_apellido, p.tipo_procedimiento, c.notas, c.mapping_estilo, c.tamaño, c.curvatura, c.espessura
     FROM citas as c
     INNER JOIN clientes as cl on c.cliente = cl.id
     INNER JOIN procedimientos as p on c.procedimiento = p.id
